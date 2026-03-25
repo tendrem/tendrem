@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tendrem — Connexion</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #EAF2EE;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.logo { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 0.4rem; }
+.logo-text { font-family: Georgia, serif; font-size: 28px; color: #1E3028; }
+.ecran { width: 100%; max-width: 420px; display: none; }
+.ecran.visible { display: block; }
+.baseline { text-align: center; font-size: 13px; color: #4a6657; margin-bottom: 2rem; }
+.profils { display: flex; flex-direction: column; gap: 12px; }
+.profil-card { background: #fff; border-radius: 16px; padding: 1.2rem 1.4rem; display: flex; align-items: center; gap: 14px; cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s, transform 0.1s; }
+.profil-card:hover { border-color: #8caf9d; transform: translateY(-1px); }
+.profil-emoji { font-size: 22px; width: 44px; height: 44px; background: #EAF2EE; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.profil-info { flex: 1; }
+.profil-nom { font-size: 15px; font-weight: 600; color: #1E3028; margin-bottom: 2px; }
+.profil-desc { font-size: 12px; color: #4a6657; }
+.profil-arrow { font-size: 20px; color: #8caf9d; }
+.form-ecran { width: 100%; max-width: 380px; display: none; }
+.form-ecran.visible { display: block; }
+.card { background: #fff; border-radius: 20px; padding: 2rem 1.8rem; box-shadow: 0 4px 24px rgba(30,48,40,0.08); }
+.back { display: flex; align-items: center; gap: 6px; color: #4a6657; font-size: 13px; cursor: pointer; margin-bottom: 1.5rem; width: fit-content; }
+.back:hover { color: #1E3028; }
+.form-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1.8rem; }
+.form-emoji { font-size: 22px; width: 42px; height: 42px; background: #EAF2EE; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.form-titre { font-size: 18px; font-weight: 600; color: #1E3028; font-family: Georgia, serif; }
+.form-sous { font-size: 12px; color: #4a6657; margin-top: 2px; }
+.label { display: block; font-size: 13px; color: #4a6657; margin-bottom: 6px; font-weight: 500; }
+.input { width: 100%; padding: 12px 14px; border: 1.5px solid #c5dbd0; border-radius: 10px; font-size: 15px; color: #1E3028; background: #fff; margin-bottom: 1rem; outline: none; transition: border-color 0.2s; }
+.input:focus { border-color: #8caf9d; }
+.btn { width: 100%; padding: 13px; background: #8caf9d; color: #1E3028; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.btn:hover { background: #7a9e8c; }
+.btn:disabled { background: #c5dbd0; cursor: not-allowed; }
+.btn-outline { background: transparent; border: 1.5px solid #8caf9d; color: #3d6e55; margin-top: 10px; }
+.btn-outline:hover { background: #EAF2EE; }
+.separateur { display: flex; align-items: center; gap: 10px; margin: 1.2rem 0; color: #4a6657; font-size: 12px; }
+.separateur::before, .separateur::after { content: ""; flex: 1; height: 1px; background: #c5dbd0; }
+.msg-error { background: #FAECE7; color: #993C1D; border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-bottom: 1rem; display: none; }
+.msg-success { background: #EAF2EE; color: #3d6e55; border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-bottom: 1rem; display: none; }
+.lien-mdp { text-align: right; font-size: 12px; margin-top: -8px; margin-bottom: 1rem; }
+.lien-mdp a { color: #8caf9d; text-decoration: none; cursor: pointer; }
+.spinner { width: 16px; height: 16px; border: 2px solid #1E3028; border-top-color: transparent; border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="ecran visible" id="ecran-choix">
+  <div class="logo">
+    <svg width="36" height="36" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 50 Q10 34 32 10 Q54 34 46 50 Q40 60 32 60 Q24 60 18 50Z" fill="#8caf9d" opacity="0.3"/>
+      <path d="M22 48 Q16 34 32 16 Q48 34 42 48 Q37 58 32 58 Q27 58 22 48Z" fill="#8caf9d"/>
+      <circle cx="32" cy="38" r="9" fill="#EAF2EE"/>
+      <circle cx="32" cy="38" r="5" fill="#1E3028"/>
+    </svg>
+    <span class="logo-text">tendrem</span>
+  </div>
+  <p class="baseline">Qui êtes-vous ?</p>
+  <div class="profils">
+    <div class="profil-card" onclick="allerConnexion('structure')">
+      <div class="profil-emoji">🏢</div>
+      <div class="profil-info"><div class="profil-nom">Structure</div><div class="profil-desc">Responsable ou coordinatrice d'aide à domicile</div></div>
+      <div class="profil-arrow">›</div>
+    </div>
+    <div class="profil-card" onclick="allerConnexion('auxiliaire')">
+      <div class="profil-emoji">👩‍⚕️</div>
+      <div class="profil-info"><div class="profil-nom">Auxiliaire de vie</div><div class="profil-desc">Accéder à mon planning et mes transmissions</div></div>
+      <div class="profil-arrow">›</div>
+    </div>
+    <div class="profil-card" onclick="allerConnexion('famille')">
+      <div class="profil-emoji">👨‍👩‍👧</div>
+      <div class="profil-info"><div class="profil-nom">Famille</div><div class="profil-desc">Suivre les visites de mon proche</div></div>
+      <div class="profil-arrow">›</div>
+    </div>
+  </div>
+</div>
+
+<div class="form-ecran" id="ecran-connexion">
+  <div class="card">
+    <div class="back" onclick="afficher('ecran-choix')">‹ Retour</div>
+    <div class="form-header">
+      <div class="form-emoji" id="cx-emoji">🏢</div>
+      <div>
+        <div class="form-titre" id="cx-titre">Structure</div>
+        <div class="form-sous" id="cx-sous">Espace responsable</div>
+      </div>
+    </div>
+    <div class="msg-error" id="cx-error"></div>
+    <label class="label">Email</label>
+    <input class="input" type="email" id="cx-email" placeholder="votre@email.com"/>
+    <label class="label">Mot de passe</label>
+    <input class="input" type="password" id="cx-password" placeholder="••••••••"/>
+    <div class="lien-mdp"><a onclick="afficher('ecran-mdp')">Mot de passe oublié ?</a></div>
+    <button class="btn" id="cx-btn" onclick="login()">
+      <span id="cx-btn-text">Se connecter</span>
+      <span id="cx-btn-loading" style="display:none"><div class="spinner"></div></span>
+    </button>
+    <div class="separateur">ou</div>
+    <button class="btn btn-outline" onclick="afficher('ecran-inscription')">Créer un compte</button>
+  </div>
+</div>
+
+<div class="form-ecran" id="ecran-inscription">
+  <div class="card">
+    <div class="back" onclick="afficher('ecran-connexion')">‹ Retour</div>
+    <div class="form-header">
+      <div class="form-emoji">✨</div>
+      <div>
+        <div class="form-titre">Créer un compte</div>
+        <div class="form-sous">Essai gratuit 14 jours</div>
+      </div>
+    </div>
+    <div class="msg-error" id="ins-error"></div>
+    <div class="msg-success" id="ins-success"></div>
+    <label class="label">Email</label>
+    <input class="input" type="email" id="ins-email" placeholder="votre@email.com"/>
+    <label class="label">Mot de passe</label>
+    <input class="input" type="password" id="ins-password" placeholder="8 caractères minimum"/>
+    <label class="label">Confirmer le mot de passe</label>
+    <input class="input" type="password" id="ins-confirm" placeholder="••••••••"/>
+    <button class="btn" id="ins-btn" onclick="inscrire()">
+      <span id="ins-btn-text">Créer mon compte →</span>
+      <span id="ins-btn-loading" style="display:none"><div class="spinner"></div></span>
+    </button>
+  </div>
+</div>
+
+<div class="form-ecran" id="ecran-mdp">
+  <div class="card">
+    <div class="back" onclick="afficher('ecran-connexion')">‹ Retour</div>
+    <div class="form-header">
+      <div class="form-emoji">🔑</div>
+      <div>
+        <div class="form-titre">Mot de passe oublié</div>
+        <div class="form-sous">Lien de réinitialisation par email</div>
+      </div>
+    </div>
+    <div class="msg-error" id="mdp-error"></div>
+    <div class="msg-success" id="mdp-success"></div>
+    <label class="label">Votre email</label>
+    <input class="input" type="email" id="mdp-email" placeholder="votre@email.com"/>
+    <button class="btn" id="mdp-btn" onclick="reinitialiserMdp()">
+      <span id="mdp-btn-text">Envoyer le lien</span>
+      <span id="mdp-btn-loading" style="display:none"><div class="spinner"></div></span>
+    </button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://hfjmlyhcmogretdaougj.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_N2Q2uw4r4PdF124XBi68yA_pfEQPoGU";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let profilActif = "structure";
+const profils = {
+  structure:  { emoji: "🏢", titre: "Structure", sous: "Espace responsable", redirect: "dashboard.html" },
+  auxiliaire: { emoji: "👩‍⚕️", titre: "Auxiliaire de vie", sous: "Mon espace de travail", redirect: "planning.html" },
+  famille:    { emoji: "👨‍👩‍👧", titre: "Famille", sous: "Suivi de mon proche", redirect: "famille.html" }
+};
+
+function afficher(id) {
+  ["ecran-choix","ecran-connexion","ecran-inscription","ecran-mdp"].forEach(e => {
+    const el = document.getElementById(e);
+    el.classList.remove("visible");
+    el.style.display = "none";
+  });
+  const cible = document.getElementById(id);
+  cible.style.display = "block";
+  setTimeout(() => cible.classList.add("visible"), 10);
+}
+
+function allerConnexion(profil) {
+  profilActif = profil;
+  const p = profils[profil];
+  document.getElementById("cx-emoji").textContent = p.emoji;
+  document.getElementById("cx-titre").textContent = p.titre;
+  document.getElementById("cx-sous").textContent = p.sous;
+  afficher("ecran-connexion");
+}
+
+function setLoading(btnId, textId, loadingId, isLoading) {
+  document.getElementById(btnId).disabled = isLoading;
+  document.getElementById(textId).style.display = isLoading ? "none" : "inline";
+  document.getElementById(loadingId).style.display = isLoading ? "flex" : "none";
+}
+
+async function login() {
+  const email = document.getElementById("cx-email").value.trim();
+  const password = document.getElementById("cx-password").value;
+  const error = document.getElementById("cx-error");
+  error.style.display = "none";
+  if (!email || !password) { error.textContent = "Merci de remplir tous les champs."; error.style.display = "block"; return; }
+  setLoading("cx-btn", "cx-btn-text", "cx-btn-loading", true);
+  try {
+    const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
+    if (authError) throw authError;
+    window.location.href = profils[profilActif].redirect;
+  } catch {
+    error.textContent = "Email ou mot de passe incorrect.";
+    error.style.display = "block";
+    setLoading("cx-btn", "cx-btn-text", "cx-btn-loading", false);
+  }
+}
+
+async function inscrire() {
+  const email = document.getElementById("ins-email").value.trim();
+  const password = document.getElementById("ins-password").value;
+  const confirm = document.getElementById("ins-confirm").value;
+  const error = document.getElementById("ins-error");
+  const success = document.getElementById("ins-success");
+  error.style.display = "none"; success.style.display = "none";
+  if (!email || !password || !confirm) { error.textContent = "Merci de remplir tous les champs."; error.style.display = "block"; return; }
+  if (password.length < 8) { error.textContent = "Mot de passe trop court (8 caractères min)."; error.style.display = "block"; return; }
+  if (password !== confirm) { error.textContent = "Les mots de passe ne correspondent pas."; error.style.display = "block"; return; }
+  setLoading("ins-btn", "ins-btn-text", "ins-btn-loading", true);
+  try {
+    const { error: authError } = await supabase.auth.signUp({ email, password });
+    if (authError) throw authError;
+    success.textContent = "✅ Compte créé ! Vérifiez votre email puis connectez-vous.";
+    success.style.display = "block";
+    setLoading("ins-btn", "ins-btn-text", "ins-btn-loading", false);
+  } catch (err) {
+    error.textContent = err.message.includes("already") ? "Cet email est déjà utilisé." : "Une erreur est survenue.";
+    error.style.display = "block";
+    setLoading("ins-btn", "ins-btn-text", "ins-btn-loading", false);
+  }
+}
+
+async function reinitialiserMdp() {
+  const email = document.getElementById("mdp-email").value.trim();
+  const error = document.getElementById("mdp-error");
+  const success = document.getElementById("mdp-success");
+  error.style.display = "none"; success.style.display = "none";
+  if (!email) { error.textContent = "Merci d'entrer votre email."; error.style.display = "block"; return; }
+  setLoading("mdp-btn", "mdp-btn-text", "mdp-btn-loading", true);
+  await supabase.auth.resetPasswordForEmail(email);
+  success.textContent = "Email envoyé ! Vérifiez votre boîte mail.";
+  success.style.display = "block";
+  setLoading("mdp-btn", "mdp-btn-text", "mdp-btn-loading", false);
+}
+
+supabase.auth.getSession().then(({ data: { session } }) => {
+  if (session) window.location.href = profils[profilActif].redirect;
+});
+
+afficher("ecran-choix");
+</script>
+</body>
+</html>
